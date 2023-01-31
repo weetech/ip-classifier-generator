@@ -1,7 +1,7 @@
 {
   "name": "ip-classifier-generator",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
+  "description": "The package allows for identifying the class of an IPv4 address and generating random IP addresses within a specified class and range. It is useful for network administrators and developers working with IP addresses.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
