@@ -1,9 +1,12 @@
 interface Options {
-  firstOctet?: { min: number; max: number };
-  secondOctet?: { min: number; max: number };
-  thirdOctet?: { min: number; max: number };
-  fourthOctet?: { min: number; max: number };
+  firstOctet?: OctetOption
+  secondOctet?: OctetOption
+  thirdOctet?: OctetOption
+  fourthOctet?: OctetOption
 }
+
+type Range = { min: number; max: number };
+type OctetOption = Range | number;
 
 function clamp(value: number, min: number, max: number): number {
   if (value >= min && value <= max) {
@@ -14,42 +17,46 @@ function clamp(value: number, min: number, max: number): number {
   return max;
 }
 
-function randomNatural(value: { min: any; max: any }): number {
+function randomNatural(value: Range): number {
   return Math.floor(Math.random() * (value.max - value.min) + value.min);
 }
 
-function genPart(options?: { min: any; max: any }, index?: number, ipClass?: string): number {
+function parseValidate(arg: string | number, fallback: number): number {
+  if (typeof arg === 'string') {
+    return parseInt(arg, 10);
+  }
+  if (isNaN(arg) || !isFinite(arg)) {
+    return fallback;
+  }
+  return arg;
+}
+
+function genPart(options?: OctetOption, index?: number, ipClass?: string): number {
   const MAX = 255;
-  let min: number = options?.min;
-  let max: number = options?.max;
-  if (typeof min === 'string') {
-    min = parseInt(min, 10);
+  if (typeof options === 'number') {
+    // return 255 if greater than 255, 0 if less than 0, else return options
+    return options >= MAX ? MAX :
+      options <= 0 ? 0 : options;
+  } else {
+    // revert to range if not number
+    options = options as Range;
   }
-
-  if (typeof max === 'string') {
-    max = parseInt(max, 10);
-  }
-
-  if (isNaN(min) || !isFinite(min)) {
-    min = 0;
-  }
-
-  if (isNaN(max) || !isFinite(max)) {
-    max = MAX;
-  }
-  if (ipClass && ipClass?.match(/^[A-Aa-a]+$/) && index === 0) {
+  let min: number = parseValidate(options?.min, 0)
+  let max: number = parseValidate(options?.max, MAX)
+  
+  if (ipClass && ipClass?.match(/^[Aa]+$/) && index === 0) {
     min = clamp(min, 0, 127);
     max = clamp(max, 0, 127);
-  } else if (ipClass && ipClass?.match(/^[B-Bb-b]+$/) && index === 0) {
+  } else if (ipClass && ipClass?.match(/^[Bb]+$/) && index === 0) {
     min = clamp(min, 128, 191);
     max = clamp(max, 128, 191);
-  } else if (ipClass && ipClass?.match(/^[C-Cc-c]+$/) && index === 0) {
+  } else if (ipClass && ipClass?.match(/^[Cc]+$/) && index === 0) {
     min = clamp(min, 192, 223);
     max = clamp(max, 192, 223);
-  } else if (ipClass && ipClass?.match(/^[D-Dd-d]+$/) && index === 0) {
+  } else if (ipClass && ipClass?.match(/^[Dd]+$/) && index === 0) {
     min = clamp(min, 224, 239);
     max = clamp(max, 224, 239);
-  } else if (ipClass && ipClass?.match(/^[E-Ee-e]+$/) && index === 0) {
+  } else if (ipClass && ipClass?.match(/^[Ee]+$/) && index === 0) {
     min = clamp(min, 240, 255);
     max = clamp(max, 240, 255);
   } else {
