@@ -41,6 +41,16 @@ The `ip-classifier-generator` package allows for `identifying the class of an IP
     );
     /// 30.80.122.140
 
+     console.log(
+      icg.randomIPV4ByRange({                      # Generate Random IP with predefined octets
+        firstOctet: 40,
+        secondOctet: 10,
+        thirdOctet: { min: 100, max: 130 },
+        fourthOctet: { min: 140, max: 170 },
+      }),
+    );
+    /// 40.10.125.166
+
   ```
 
 ## Authors
