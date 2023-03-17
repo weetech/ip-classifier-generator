@@ -34,3 +34,17 @@ test('Random IP By Range', () => {
   expect(+icg.randomIPV4ByRange({ fourthOctet: { min: 20, max: 50 } }).split('.')[3]).toBeGreaterThanOrEqual(20);
   expect(+icg.randomIPV4ByRange({ fourthOctet: { min: 20, max: 50 } }).split('.')[3]).toBeLessThanOrEqual(50);
 });
+
+test('Random IP with static range', () => {
+  expect(+icg.randomIPV4ByRange({ firstOctet: 10 }).split('.')[0]).toBe(10);
+  expect(+icg.randomIPV4ByRange({ firstOctet: 30 }).split('.')[0]).toBe(30);
+
+  expect(+icg.randomIPV4ByRange({ secondOctet: 20 }).split('.')[1]).toBe(20);
+  expect(+icg.randomIPV4ByRange({ secondOctet: 40 }).split('.')[1]).toBe(40);
+
+  expect(+icg.randomIPV4ByRange({ thirdOctet: 30 }).split('.')[2]).toBe(30);
+  expect(+icg.randomIPV4ByRange({ thirdOctet: 50 }).split('.')[2]).toBe(50);
+
+  expect(+icg.randomIPV4ByRange({ fourthOctet: 40 }).split('.')[3]).toBe(40);
+  expect(+icg.randomIPV4ByRange({ fourthOctet: 60 }).split('.')[3]).toBe(60);
+});
